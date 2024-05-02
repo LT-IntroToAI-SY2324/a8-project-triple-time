@@ -12,10 +12,10 @@ def parse_line(line: str) -> Tuple[List[float], List[float]]:
         tuple of input list and output list
     """
     tokens = line.split(",")
-    out = int(tokens[0])
-    output = [0 if out == 1 else 0.5 if out == 2 else 1]
+    out = int(tokens[len(tokens) - 1])
+    output = [0.14 if out == 1 else 0.28 if out == 2 else 0.42 if out == 3 else 0.56 if out == 4 else 0.70 if out == 5 else 0.84 if out == 6 else 1]
 
-    inpt = [float(x) for x in tokens[1:]]
+    inpt = [float(x) for x in tokens[1:len(tokens) - 1]]
     return (inpt, output)
 
 
@@ -44,19 +44,21 @@ def normalize(data: List[Tuple[List[float], List[float]]]):
             data[i][0][j] = (data[i][0][j] - leasts[j]) / (mosts[j] - leasts[j])
     return data
 
+if __name__ == "__main__":
 
-with open("wine_data.txt", "r") as f:
-    training_data = [parse_line(line) for line in f.readlines() if len(line) > 4]
 
-# print(training_data)
-td = normalize(training_data)
-# print(td)
+    with open("wine_data.txt", "r") as f:
+        training_data = [parse_line(line) for line in f.readlines() if len(line) > 4]
 
-train, test = train_test_split(td)
+    # print(training_data)
+    td = normalize(training_data)
+    # print(td)
 
-nn = NeuralNet(13, 3, 1)
-nn.train(train, iters=10000, print_interval=1000, learning_rate=0.2)
+    train, test = train_test_split(td)
 
-for i in nn.test_with_expected(test):
-    difference = round(abs(i[1][0] - i[2][0]), 3)
-    print(f"desired: {i[1]}, actual: {i[2]} diff: {difference}")
+    nn = NeuralNet(13, 3, 1)
+    nn.train(train, iters=1000, print_interval=100, learning_rate=0.2)
+
+    for i in nn.test_with_expected(test):
+        difference = round(abs(i[1][0] - i[2][0]), 3)
+        print(f"desired: {i[1]}, actual: {i[2]} diff: {difference}")
