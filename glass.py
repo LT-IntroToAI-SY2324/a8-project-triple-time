@@ -5,8 +5,6 @@ from neural import *
 from sklearn.model_selection import train_test_split
 from neural_net_UCI_data import parse_line, normalize
 
-print("yo")
-
 
 with open("glass_data.txt", "r") as f:
         training_data = [parse_line(line) for line in f.readlines() if len(line) > 4]
@@ -17,12 +15,12 @@ td = normalize(training_data)
 
 train, test = train_test_split(td)
 
-nn = NeuralNet(9, 3, 1)
+nn = NeuralNet(9, 5, 1)
 
 print(f"Print Train \n {train}\n")
 print(f"Print Test \n {test}\n")
 
-nn.train(train, iters=1000, print_interval=100, learning_rate=0.2)
+nn.train(train, iters=10000, print_interval=1000, learning_rate=0.2)
 
 for i in nn.test_with_expected(test):
     difference = round(abs(i[1][0] - i[2][0]), 3)
